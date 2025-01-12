@@ -9,8 +9,10 @@ def convert_to_pdf(input_file, output_file=None, css_file=None, keep=False, debu
         raise FileNotFoundError(f"Input file '{input_file}' not found")
     
     # Check if CSS file exists when specified
-    if css_file and not os.path.exists(css_file):
-        raise FileNotFoundError(f"CSS file '{css_file}' not found")
+    if css_file:
+        css_file = os.path.abspath(css_file)
+        if not os.path.exists(css_file):
+            raise FileNotFoundError(f"CSS file '{css_file}' not found")
     
     # Get base filename without extension
     base_name = os.path.splitext(input_file)[0]
@@ -23,13 +25,14 @@ def convert_to_pdf(input_file, output_file=None, css_file=None, keep=False, debu
             print(f'The output file is {output_file}')
     
     # Create temporary HTML file path
-    temp_html = f"{base_name}_temp.html"
+    temp_html = os.path.join(os.path.dirname(output_file), f"{os.path.basename(base_name)}_temp.html")
     if debug:
         print(f'The temporary file is {temp_html}.')
     
     # Prepare pandoc command
     pandoc_cmd = ["pandoc", "-s", input_file, "-o", temp_html]
     if css_file:
+        
         pandoc_cmd.extend(["-c", css_file])
 
     if debug:
