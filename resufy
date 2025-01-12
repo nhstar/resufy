@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+
+INPUTFILE=$1
+TITLE=$(echo "$INPUTFILE" | rev | cut -d"." -f2- | rev)
+
+if [ ! -f $INPUTFILE ]; then
+  echo "Your file isn't there.  Check the name"
+  exit
+fi;
+
+pandoc -s -o $TITLE.pdf --pdf-engine=wkhtmltopdf -V margin-top=5 -V margin-bottom=5 -V margin-right=5 -V margin-left=5 -V page-size=letter --css=style.css $INPUTFILE
+
+if [ -f $TITLE.pdf ]; then
+  echo "Successfully created $TITLE.pdf."
+else
+  echo "Somthing went wrong."
+fi;
+
+#pandoc -s -o stephen_jones_master.pdf --pdf-engine=wkhtmltopdf -V margin-top=3 -V margin-bottom=3 -V margin-right=5 -V margin-left=5 --css=./style.css --metadata pagetitle="Stephen Jones" stephen_jones_master.md
+
